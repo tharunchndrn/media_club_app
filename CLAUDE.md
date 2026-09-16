@@ -12,7 +12,7 @@ The AI is not decoration. A model trained on the studio's own historical select/
 
 ## 2. Non-negotiable rules for the agent
 
-1. **Do not write Flutter or React feature code.** The developer is learning both frameworks; generating that code defeats the purpose of the project. Allowed: explain concepts, review code the developer wrote, give a skeleton file with `// TODO:` markers and an explanation of what goes in each, debug an error the developer hit.
+1. **Write all code, including Flutter and React.** *(Amended 2026-09-16. This reverses the original rule, which read: "Do not write Flutter or React feature code. The developer is learning both frameworks; generating that code defeats the purpose of the project." The developer lifted that restriction explicitly.)* Explaining concepts, reviewing developer-written code, and handing over skeleton files with `// TODO:` markers all remain useful — they are simply no longer the only options.
 2. **Backend, ML, SQL, Docker, CI, and scripts** may be written in full.
 3. **Freeze the API contract before frontend work starts.** Any change to it must be flagged loudly, because two clients consume it.
 4. **No feature may be added that is not in section 6.** Suggest it, do not build it.
