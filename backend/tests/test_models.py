@@ -1,7 +1,7 @@
 import uuid
 
 import pytest
-from sqlalchemy import select as sa_select
+from sqlalchemy import select as sa_select, text
 from sqlalchemy.exc import IntegrityError
 
 from app.db.base import Base
@@ -69,3 +69,23 @@ def test_deleting_a_shoot_cascades_to_its_images(db_session):
     db_session.delete(shoot)
     db_session.flush()
     assert db_session.scalars(sa_select(Image)).all() == []
+
+
+def test_deleting_a_cover_image_sets_the_shoot_cover_image_id_to_null(db_session):
+    _, shoot, image = _chain(db_session)
+    shoot.cover_image_id = image.id
+    db_session.flush()
+    db_session.delete(image)
+    db_session.flush()
+    db_session.expire(shoot)
+    assert shoot.cover_image_id is None
+
+
+def test_deleting_a_shoot_via_raw_sql_cascades_to_its_images_at_the_db_level(db_session):
+    _, shoot, image = _chain(db_session)
+    shoot_id = shoot.id
+    db_session.execute(text("DELETE FROM shoots WHERE id = :id"), {"id": shoot_id})
+    remaining = db_session.execute(
+        text("SELECT id FROM images WHERE shoot_id = :id"), {"id": shoot_id}
+    ).all()
+    assert remaining == []

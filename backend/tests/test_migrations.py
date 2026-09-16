@@ -58,8 +58,107 @@ def test_upgrade_creates_every_table(alembic_config, migration_url):
     command.upgrade(alembic_config, "head")
     engine = create_engine(migration_url)
     try:
-        tables = set(inspect(engine).get_table_names())
-        assert EXPECTED_TABLES <= tables
+        tables = set(inspect(engine).get_table_names()) - {"alembic_version"}
+        assert tables == EXPECTED_TABLES
+    finally:
+        engine.dispose()
+
+
+# Exact column set per table, taken from the SQLAlchemy models (not invented).
+# This is the highest-value assertion this branch carries: these names freeze
+# into the API contract at build step 3, and a rename after that is a
+# coordinated breaking change across the React admin and the Flutter client.
+EXPECTED_COLUMNS = {
+    "studio_users": {
+        "id", "email", "password_hash", "name", "is_active",
+        "created_at", "updated_at",
+    },
+    "clients": {
+        "id", "name", "email", "phone", "notes", "created_at", "updated_at",
+    },
+    "magic_links": {
+        "id", "client_id", "token_hash", "expires_at", "used_at", "created_at",
+    },
+    "shoots": {
+        "id", "client_id", "title", "shoot_date", "status", "select_limit",
+        "downloads_enabled", "cover_image_id", "published_at", "delivered_at",
+        "created_at", "updated_at",
+    },
+    "images": {
+        "id", "shoot_id", "filename", "original_key", "web_key", "thumb_key",
+        "width", "height", "bytes", "captured_at", "uploaded_at",
+        "blur_variance", "exposure_score", "eyes_closed", "ai_verdict",
+        "ai_reasons", "ai_score", "admin_verdict", "admin_note", "in_gallery",
+        "gallery_order",
+    },
+    "jobs": {
+        "id", "shoot_id", "kind", "status", "progress_done", "progress_total",
+        "error", "started_at", "finished_at", "created_at",
+    },
+    "selects": {
+        "id", "shoot_id", "image_id", "client_id", "created_at",
+    },
+    "edit_requests": {
+        "id", "shoot_id", "image_id", "client_id", "note", "status",
+        "admin_note", "created_at", "updated_at",
+    },
+    "finals": {
+        "id", "shoot_id", "image_id", "key", "filename", "bytes", "created_at",
+    },
+}
+
+
+def test_column_names_match_the_models_exactly(alembic_config, migration_url):
+    command.upgrade(alembic_config, "head")
+    engine = create_engine(migration_url)
+    try:
+        inspector = inspect(engine)
+        for table, expected in EXPECTED_COLUMNS.items():
+            actual = {c["name"] for c in inspector.get_columns(table)}
+            assert actual == expected, f"{table}: {actual} != {expected}"
+    finally:
+        engine.dispose()
+
+
+def test_images_has_its_three_named_indexes(alembic_config, migration_url):
+    command.upgrade(alembic_config, "head")
+    engine = create_engine(migration_url)
+    try:
+        names = {ix["name"] for ix in inspect(engine).get_indexes("images")}
+        assert {
+            "ix_images_shoot_id",
+            "ix_images_shoot_id_in_gallery",
+            "ix_images_shoot_id_ai_verdict",
+        } <= names
+    finally:
+        engine.dispose()
+
+
+def test_magic_links_has_an_index_on_token_hash(alembic_config, migration_url):
+    command.upgrade(alembic_config, "head")
+    engine = create_engine(migration_url)
+    try:
+        indexed_columns = [
+            set(ix["column_names"]) for ix in inspect(engine).get_indexes("magic_links")
+        ]
+        assert {"token_hash"} in indexed_columns
+    finally:
+        engine.dispose()
+
+
+def test_clients_and_studio_users_have_a_unique_email(alembic_config, migration_url):
+    command.upgrade(alembic_config, "head")
+    engine = create_engine(migration_url)
+    try:
+        inspector = inspect(engine)
+        clients_unique = [
+            set(c["column_names"]) for c in inspector.get_unique_constraints("clients")
+        ]
+        studio_users_unique = [
+            set(c["column_names"]) for c in inspector.get_unique_constraints("studio_users")
+        ]
+        assert {"email"} in clients_unique
+        assert {"email"} in studio_users_unique
     finally:
         engine.dispose()
 
