@@ -6,8 +6,9 @@ services:
       POSTGRES_USER: studio
       POSTGRES_PASSWORD: studio
       POSTGRES_DB: studio
+    # Host 5433, not 5432: a natively installed Postgres already owns 5432 on the dev machine.
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - studio_pgdata:/var/lib/postgresql/data
     healthcheck:
