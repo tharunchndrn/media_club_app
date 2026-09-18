@@ -12,7 +12,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    database_url: str = "postgresql+psycopg://studio:studio@localhost:5433/studio"
+    database_url: str = "postgresql+psycopg://mediaclub:mediaclub@localhost:5433/mediaclub"
     environment: str = "development"
 
 
