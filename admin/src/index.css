@@ -1,0 +1,224 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+
+  /* Navy — sampled from the club mark (#29458F). Carries every action:
+     primary buttons, links, focus. */
+  --color-navy-950: #0b1226;
+  --color-navy-900: #111c3d;
+  --color-navy-800: #18285a;
+  --color-navy-700: #1f3573;
+  --color-navy-600: #29458f;
+  --color-navy-500: #3556a8;
+  --color-navy-100: #e3e9f6;
+  --color-navy-50: #f1f4fb;
+
+  /* Gold — sampled from the club mark (#E4A830). Reserved for emphasis and
+     selection, never for body links: it only meets contrast as a fill
+     behind navy text, or as gold-700 text on white. */
+  --color-gold-700: #8a6212;
+  --color-gold-600: #c48d1c;
+  --color-gold-500: #e4a830;
+  --color-gold-400: #efbc55;
+  --color-gold-100: #fcf0d9;
+
+  /* Ink — neutrals carry a faint navy cast so black and navy read as one
+     family rather than two unrelated darks. */
+  --color-ink-950: #0a0c14;
+  --color-ink-900: #14161f;
+  --color-ink-800: #252936;
+  --color-ink-700: #3a3e4c;
+  --color-ink-600: #525768;
+  --color-ink-500: #6b7185;
+  --color-ink-400: #8b90a3;
+  --color-ink-300: #b6bac8;
+  --color-ink-200: #dbdee7;
+  --color-ink-100: #e7e9f0;
+  --color-ink-50: #f3f4f8;
+  --color-paper: #eef0f5;
+
+  /* State. Deliberately desaturated so they never compete with the brand
+     pair. Draft/pending is neutral, not amber, so gold stays unambiguous. */
+  --color-ok-600: #157347;
+  --color-ok-100: #dcf1e5;
+  --color-info-600: #0b6e80;
+  --color-info-100: #dcf0f3;
+  --color-alert-600: #9f2d24;
+  --color-alert-100: #fae5e3;
+
+  /* Radius carries hierarchy: panels are softer than controls, and
+     thumbnails stay nearly square like a print. */
+  --radius-panel: 12px;
+  --radius-control: 8px;
+  --radius-print: 5px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  @apply bg-paper text-ink-900;
+  margin: 0;
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+@layer components {
+  .panel {
+    @apply rounded-panel border border-ink-200 bg-white;
+  }
+
+  .row-list {
+    @apply divide-y divide-ink-200 overflow-hidden rounded-panel border border-ink-200 bg-white;
+  }
+
+  .field-label {
+    @apply mb-1.5 block text-sm font-medium text-ink-700;
+  }
+
+  .input {
+    @apply w-full rounded-control border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900
+           placeholder:text-ink-400
+           focus:border-navy-600 focus:outline-none focus:ring-2 focus:ring-navy-600/25;
+  }
+
+  .input:hover:not(:focus) {
+    @apply border-ink-300;
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  .btn-quiet,
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-control text-sm font-semibold
+           focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy-600
+           disabled:cursor-not-allowed disabled:opacity-55;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    @apply px-4 py-2;
+  }
+
+  .btn-quiet,
+  .btn-danger {
+    @apply px-2.5 py-1.5 text-xs;
+  }
+
+  .btn-primary {
+    @apply bg-navy-600 text-white hover:bg-navy-700 active:bg-navy-800;
+  }
+
+  .btn-secondary {
+    @apply border border-ink-200 bg-white text-ink-700 hover:border-ink-300 hover:bg-ink-50;
+  }
+
+  .btn-quiet {
+    @apply text-ink-600 hover:bg-ink-100 hover:text-ink-900;
+  }
+
+  .btn-danger {
+    @apply text-alert-600 hover:bg-alert-100;
+  }
+
+  .chip-neutral,
+  .chip-navy,
+  .chip-gold,
+  .chip-info,
+  .chip-ok {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+
+  .chip-neutral {
+    @apply bg-ink-100 text-ink-700;
+  }
+
+  .chip-navy {
+    @apply bg-navy-100 text-navy-700;
+  }
+
+  .chip-gold {
+    @apply bg-gold-100 text-gold-700;
+  }
+
+  .chip-info {
+    @apply bg-info-100 text-info-600;
+  }
+
+  .chip-ok {
+    @apply bg-ok-100 text-ok-600;
+  }
+
+  .empty-state {
+    @apply rounded-panel border border-dashed border-ink-300 bg-white px-6 py-12 text-center;
+  }
+
+  .skeleton {
+    @apply rounded-panel bg-ink-100;
+    animation: pulse-soft 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+::selection {
+  background: var(--color-gold-100);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  background-clip: content-box;
+  background-color: var(--color-ink-300);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-ink-400);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
