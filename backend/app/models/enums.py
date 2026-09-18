@@ -3,37 +3,28 @@ import enum
 from sqlalchemy import Enum as SAEnum
 
 
-class ShootStatus(str, enum.Enum):
+class EventStatus(str, enum.Enum):
     DRAFT = "draft"
-    UPLOADING = "uploading"
-    CULLING = "culling"
-    CULLED = "culled"
     PUBLISHED = "published"
-    SELECTS_DONE = "selects_done"
-    DELIVERED = "delivered"
 
 
-class Verdict(str, enum.Enum):
-    KEEP = "keep"
-    REJECT = "reject"
+class SuggestionCategory(str, enum.Enum):
+    EVENT_IDEA = "event-idea"
+    COVERAGE_REQUEST = "coverage-request"
+    DESIGN_REQUEST = "design-request"
+    WORKSHOP_REQUEST = "workshop-request"
+    COLLABORATION = "collaboration"
+    EQUIPMENT = "equipment"
+    FEEDBACK = "feedback"
+    COMPLAINT = "complaint"
+    OTHER = "other"
 
 
-class JobKind(str, enum.Enum):
-    CULL = "cull"
-
-
-class JobStatus(str, enum.Enum):
-    QUEUED = "queued"
-    RUNNING = "running"
-    SUCCEEDED = "succeeded"
-    FAILED = "failed"
-
-
-class EditStatus(str, enum.Enum):
-    OPEN = "open"
-    IN_PROGRESS = "in_progress"
-    DONE = "done"
-    REJECTED = "rejected"
+class SuggestionStatus(str, enum.Enum):
+    NEW = "new"
+    REVIEWING = "reviewing"
+    PLANNED = "planned"
+    DECLINED = "declined"
 
 
 def pg_enum(python_enum: type[enum.Enum], name: str) -> SAEnum:
