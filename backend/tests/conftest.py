@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
 
-TEST_DB_NAME = "studio_test"
+TEST_DB_NAME = "mediaclub_test"
 
 
 def _admin_dsn() -> str:
@@ -21,7 +21,7 @@ def _test_url() -> str:
 
 @pytest.fixture(scope="session")
 def test_database():
-    """Drop and recreate studio_test around the whole session."""
+    """Drop and recreate mediaclub_test around the whole session."""
     with psycopg.connect(_admin_dsn(), autocommit=True) as conn:
         conn.execute(f'DROP DATABASE IF EXISTS "{TEST_DB_NAME}" WITH (FORCE)')
         conn.execute(f'CREATE DATABASE "{TEST_DB_NAME}"')
