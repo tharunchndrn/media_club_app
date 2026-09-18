@@ -1,21 +1,21 @@
 services:
   db:
     image: pgvector/pgvector:pg16
-    container_name: studio_db
+    container_name: mediaclub_db
     environment:
-      POSTGRES_USER: studio
-      POSTGRES_PASSWORD: studio
-      POSTGRES_DB: studio
+      POSTGRES_USER: mediaclub
+      POSTGRES_PASSWORD: mediaclub
+      POSTGRES_DB: mediaclub
     # Host 5433, not 5432: a natively installed Postgres already owns 5432 on the dev machine.
     ports:
       - "5433:5432"
     volumes:
-      - studio_pgdata:/var/lib/postgresql/data
+      - mediaclub_pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U studio -d studio"]
+      test: ["CMD-SHELL", "pg_isready -U mediaclub -d mediaclub"]
       interval: 5s
       timeout: 5s
       retries: 10
 
 volumes:
-  studio_pgdata:
+  mediaclub_pgdata:

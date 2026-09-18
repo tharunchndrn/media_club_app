@@ -20,6 +20,7 @@ dist/
 .vscode/
 .DS_Store
 Thumbs.db
+*.db
 
 # Stray Flutter build output left at the old root
 /.dart_tool/
